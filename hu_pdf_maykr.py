@@ -6,7 +6,6 @@ from reportlab.lib.pagesizes import letter
 
 def is_url_valid(url):
     try:
-        # Add a default scheme (e.g., https) if none is provided by the user
         if not url.startswith("http://") and not url.startswith("https://"):
             url = "https://" + url
         response = requests.head(url)
