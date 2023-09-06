@@ -4,11 +4,26 @@ from PIL import Image
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
 
+def is_url_valid(url):
+    try:
+        # Add a default scheme (e.g., https) if none is provided by the user
+        if not url.startswith("http://") and not url.startswith("https://"):
+            url = "https://" + url
+        response = requests.head(url)
+        return response.status_code == 200
+    except requests.ConnectionError:
+        return False
+
+
 def input_url_and_num_images():
-    full_url = input("Enter the URL of the first image: ")
-    base_url = full_url.rsplit("-", 1)[0] + "-"
-    num_images = int(input("Enter the number of pages to download: "))
-    return base_url, num_images
+    while True:
+        full_url = input("First image URL: ")
+        if is_url_valid(full_url):
+            base_url = full_url.rsplit("-", 1)[0] + "-"
+            num_images = int(input("Enter the number of pages to download: "))
+            return base_url, num_images
+        else:
+            print("Invalid URL. Please try again.")
 
 def create_pdf_from_images(image_dir, output_pdf):
     image_paths = [os.path.join(image_dir, filename) for filename in os.listdir(image_dir) if filename.endswith(".png")]
